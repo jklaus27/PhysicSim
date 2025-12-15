@@ -15,7 +15,7 @@ html, body {
 }
 
 header {
-  padding: 14px 20px;
+  padding: 12px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 
@@ -26,38 +26,44 @@ header a {
 }
 
 main {
-  max-width: 950px;
+  max-width: 900px;
   margin: auto;
-  padding: 20px;
+  padding: 16px;
 }
 
-h1 { margin: 0 0 6px; font-size: 30px; }
+h1 {
+  margin: 0 0 6px;
+  font-size: 26px;
+}
 
 .layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
 }
 
 .controls {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 14px;
 }
 
 .control {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 label {
-  font-size: 13px;
+  font-size: 12px;
   opacity: 0.8;
-  display: block;
 }
 
 input {
   width: 100%;
+}
+
+.hidden {
+  display: none;
 }
 
 .buttons {
@@ -80,19 +86,19 @@ button {
 .canvas-wrap {
   background: #060912;
   border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 8px;
 }
 
 canvas {
   width: 100%;
-  height: 200px;
+  height: 160px;
   display: block;
 }
 
 .readout {
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: 12px;
+  margin-top: 6px;
   opacity: 0.85;
 }
 </style>
@@ -108,22 +114,209 @@ canvas {
 <h1>1D Motion: Forces & Collisions</h1>
 
 <div class="layout">
+
 <div class="controls">
+  <strong>Object A</strong>
 
-<h3>Object A</h3>
-<div class="control"><label>Mass (kg)</label><input id="m1" type="number" value="1"></div>
-<div class="control"><label>Initial x (m)</label><input id="x1" type="number" value="20"></div>
-<div class="control"><label>Initial v (m/s)</label><input id="v1" type="number" value="6"></div>
+  <div class="control">
+    <label>Mass (kg)</label>
+    <input id="m1" type="number" value="1">
+  </div>
 
-<h3>Object B</h3>
-<div class="control">
-  <label><input id="enableB" type="checkbox"> Enable second object</label>
+  <div class="control">
+    <label>Initial position (m)</label>
+    <input id="x1" type="number" value="20">
+  </div>
+
+  <div class="control">
+    <label>Initial velocity (m/s)</label>
+    <input id="v1" type="number" value="6">
+  </div>
+
+  <div class="control">
+    <label>Force on A (N)</label>
+    <input id="F" type="number" value="0">
+  </div>
+
+  <div class="control">
+    <label>Friction μ</label>
+    <input id="mu" type="number" step="0.05" value="0">
+  </div>
+
+  <hr style="opacity:0.2">
+
+  <div class="control">
+    <label>
+      <input id="enableB" type="checkbox"> Enable second object
+    </label>
+  </div>
+
+  <div id="objectB" class="hidden">
+    <strong>Object B</strong>
+
+    <div class="control">
+      <label>Mass (kg)</label>
+      <input id="m2" type="number" value="1">
+    </div>
+
+    <div class="control">
+      <label>Initial position (m)</label>
+      <input id="x2" type="number" value="70">
+    </div>
+
+    <div class="control">
+      <label>Initial velocity (m/s)</label>
+      <input id="v2" type="number" value="-4">
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button id="play">Play</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <div class="readout" id="readout"></div>
 </div>
-<div class="control"><label>Mass (kg)</label><input id="m2" type="number" value="1"></div>
-<div class="control"><label>Initial x (m)</label><input id="x2" type="number" value="70"></div>
-<div class="control"><label>Initial v (m/s)</label><input id="v2" type="number" value="-4"></div>
 
-<h3>Forces</h3>
-<div class="control"><label>
+<div class="canvas-wrap">
+  <canvas id="sim"></canvas>
+</div>
+
+</div>
+</main>
+
+<script>
+const canvas = document.getElementById("sim");
+const ctx = canvas.getContext("2d");
+
+const playBtn = document.getElementById("play");
+const pauseBtn = document.getElementById("pause");
+const resetBtn = document.getElementById("reset");
+
+const enableB = document.getElementById("enableB");
+const objectBUI = document.getElementById("objectB");
+
+const m1 = document.getElementById("m1");
+const x1 = document.getElementById("x1");
+const v1 = document.getElementById("v1");
+const m2 = document.getElementById("m2");
+const x2 = document.getElementById("x2");
+const v2 = document.getElementById("v2");
+const Finput = document.getElementById("F");
+const muInput = document.getElementById("mu");
+const readout = document.getElementById("readout");
+
+function resize() {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const g = 9.8;
+const track = 100;
+const R = 4;
+
+let A, B;
+let running = false;
+let t = 0;
+let last = 0;
+
+function reset() {
+  A = { m:+m1.value, x:+x1.value, v:+v1.value };
+  B = { m:+m2.value, x:+x2.value, v:+v2.value };
+  t = 0;
+  running = false;
+}
+reset();
+
+function accel(obj, F, mu) {
+  if (Math.abs(obj.v) < 1e-4 && Math.abs(F) < mu*obj.m*g) return 0;
+  return (F - mu*obj.m*g*Math.sign(obj.v || F)) / obj.m;
+}
+
+function wall(obj) {
+  if (obj.x < R) { obj.x = R; obj.v *= -1; }
+  if (obj.x > track-R) { obj.x = track-R; obj.v *= -1; }
+}
+
+function collide() {
+  if (!enableB.checked) return;
+  const dx = B.x - A.x;
+  if (Math.abs(dx) <= 2*R) {
+    const u1=A.v,u2=B.v,mA=A.m,mB=B.m;
+    A.v = (u1*(mA-mB)+2*mB*u2)/(mA+mB);
+    B.v = (u2*(mB-mA)+2*mA*u1)/(mA+mB);
+  }
+}
+
+function update(dt) {
+  const F = +Finput.value;
+  const mu = +muInput.value;
+
+  A.v += accel(A,F,mu)*dt;
+  A.x += A.v*dt;
+
+  if (enableB.checked) {
+    B.x += B.v*dt;
+    collide();
+    wall(B);
+  }
+  wall(A);
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const m=30, y=canvas.height/2;
+  const s=(canvas.width-2*m)/track;
+
+  ctx.strokeStyle="rgba(255,255,255,0.4)";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(m,y);
+  ctx.lineTo(canvas.width-m,y);
+  ctx.stroke();
+
+  function ball(x,c){
+    ctx.fillStyle=c;
+    ctx.beginPath();
+    ctx.arc(m+x*s,y,Math.max(R*s,10),0,Math.PI*2);
+    ctx.fill();
+  }
+
+  ball(A.x,"#8ecbff");
+  if (enableB.checked) ball(B.x,"#ffb48e");
+
+  let txt = `t=${t.toFixed(2)}s | A: x=${A.x.toFixed(1)} v=${A.v.toFixed(1)}`;
+  if (enableB.checked) txt += ` | B: x=${B.x.toFixed(1)} v=${B.v.toFixed(1)}`;
+  readout.textContent = txt;
+}
+
+function loop(ts){
+  if (running) {
+    const dt=Math.min((ts-last)/1000,0.02);
+    t+=dt;
+    update(dt);
+  }
+  last=ts;
+  draw();
+  requestAnimationFrame(loop);
+}
+
+playBtn.onclick = () => running = true;
+pauseBtn.onclick = () => running = false;
+resetBtn.onclick = reset;
+
+enableB.onchange = () => {
+  objectBUI.classList.toggle("hidden", !enableB.checked);
+  reset();
+};
+
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
 
 
