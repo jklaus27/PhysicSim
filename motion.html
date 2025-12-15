@@ -1,289 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Motion Simulator (1D)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1D Motion Simulator</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #0b0f1a;
-      color: white;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0b0f1a;
+  color: white;
+  font-family: system-ui, sans-serif;
+}
 
-    header {
-      padding: 16px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+header {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
 
-    header a { color: white; text-decoration: none; opacity: 0.7; }
+header a {
+  color: white;
+  text-decoration: none;
+  opacity: 0.7;
+}
 
-    main {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 24px 24px 40px;
-    }
+main {
+  max-width: 950px;
+  margin: auto;
+  padding: 20px;
+}
 
-    h1 { font-size: 36px; margin: 0 0 8px; }
+h1 { margin: 0 0 6px; font-size: 30px; }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 28px;
-    }
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+}
 
-    .controls {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
-      padding: 20px;
-    }
+.controls {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 16px;
+}
 
-    .controls h2 { margin-top: 16px; font-size: 17px; }
+.control {
+  margin-bottom: 10px;
+}
 
-    .control { margin-bottom: 12px; }
+label {
+  font-size: 13px;
+  opacity: 0.8;
+  display: block;
+}
 
-    .control label {
-      display: block;
-      font-size: 13px;
-      opacity: 0.8;
-      margin-bottom: 4px;
-    }
+input {
+  width: 100%;
+}
 
-    input[type=number] { width: 100%; }
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
 
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 14px;
-    }
+button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  background: white;
+  color: black;
+  font-weight: 600;
+  cursor: pointer;
+}
 
-    button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 12px;
-      border: none;
-      background: white;
-      color: black;
-      font-weight: 600;
-      cursor: pointer;
-    }
+.canvas-wrap {
+  background: #060912;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 12px;
+}
 
-    .equations {
-      margin-top: 16px;
-      font-size: 13px;
-      opacity: 0.8;
-      line-height: 1.5;
-      background: rgba(0,0,0,0.25);
-      padding: 12px;
-      border-radius: 12px;
-    }
+canvas {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
 
-    .canvas-wrap {
-      background: #060912;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    canvas { width: 100%; height: 220px; display: block; }
-
-    .readout { margin-top: 10px; font-size: 14px; opacity: 0.85; }
-  </style>
+.readout {
+  font-size: 13px;
+  margin-top: 8px;
+  opacity: 0.85;
+}
+</style>
 </head>
+
 <body>
 
 <header>
   <a href="simulator-tree.html">← Simulators</a>
-  <span>Motion (1D)</span>
 </header>
 
 <main>
-  <h1>1D Dynamics: Forces & Collisions</h1>
-  <p>
-    A force-based one dimensional dynamics simulator with elastic wall and object
-    collisions. Motion is computed from Newton’s laws using time integration.
-  </p>
+<h1>1D Motion: Forces & Collisions</h1>
 
-  <div class="layout">
-    <div class="controls">
-      <h2>Object A</h2>
-      <div class="control"><label>Mass (kg)</label><input type="number" id="m1" value="1" step="0.1"></div>
-      <div class="control"><label>Initial Position (m)</label><input type="number" id="x1" value="20"></div>
-      <div class="control"><label>Initial Velocity (m/s)</label><input type="number" id="v1" value="8"></div>
+<div class="layout">
+<div class="controls">
 
-      <h2>Object B</h2>
-      <div class="control"><label><input type="checkbox" id="enableB"> Enable second object</label></div>
-      <div class="control"><label>Mass (kg)</label><input type="number" id="m2" value="1" step="0.1"></div>
-      <div class="control"><label>Initial Position (m)</label><input type="number" id="x2" value="80"></div>
-      <div class="control"><label>Initial Velocity (m/s)</label><input type="number" id="v2" value="-4"></div>
+<h3>Object A</h3>
+<div class="control"><label>Mass (kg)</label><input id="m1" type="number" value="1"></div>
+<div class="control"><label>Initial x (m)</label><input id="x1" type="number" value="20"></div>
+<div class="control"><label>Initial v (m/s)</label><input id="v1" type="number" value="6"></div>
 
-      <h2>Forces</h2>
-      <div class="control"><label>Applied Force on A (N)</label><input type="number" id="F" value="0"></div>
-      <div class="control"><label>Friction coefficient μ</label><input type="number" id="mu" value="0" step="0.05"></div>
+<h3>Object B</h3>
+<div class="control">
+  <label><input id="enableB" type="checkbox"> Enable second object</label>
+</div>
+<div class="control"><label>Mass (kg)</label><input id="m2" type="number" value="1"></div>
+<div class="control"><label>Initial x (m)</label><input id="x2" type="number" value="70"></div>
+<div class="control"><label>Initial v (m/s)</label><input id="v2" type="number" value="-4"></div>
 
-      <div class="buttons">
-        <button id="play">Play</button>
-        <button id="pause">Pause</button>
-        <button id="reset">Reset</button>
-      </div>
+<h3>Forces</h3>
+<div class="control"><label>
 
-      <div class="equations">
-        <b>Model:</b><br>
-        F_net = F − μ m g · sign(v)<br>
-        a = F_net / m<br>
-        v(t+Δt) = v + aΔt<br>
-        x(t+Δt) = x + vΔt<br><br>
-        Collisions: perfectly elastic (momentum + energy conserved)
-      </div>
-
-      <div class="readout" id="readout"></div>
-    </div>
-
-    <div class="canvas-wrap">
-      <canvas id="sim"></canvas>
-    </div>
-  </div>
-</main>
-
-<script>
-  const canvas = document.getElementById('sim');
-  const ctx = canvas.getContext('2d');
-
-  function resize() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  const g = 9.8;
-  const trackLength = 100;
-  // Visual / physical scaling
-  const radius = 4.0; // larger object radius for visibility
-
-  let running = false, last = 0, t = 0;
-  let A = {}, B = {};
-
-  function reset() {
-    t = 0;
-    running = false;
-    A = { m: +m1.value, x: +x1.value, v: +v1.value };
-    B = { m: +m2.value, x: +x2.value, v: +v2.value };
-  }
-
-  function accel(obj, F, mu) {
-    if (Math.abs(obj.v) < 1e-6 && Math.abs(F) < mu * obj.m * g) return 0;
-    return (F - mu * obj.m * g * Math.sign(obj.v || F)) / obj.m;
-  }
-
-  function wallBounce(obj) {
-    if (obj.x < radius) {
-      obj.x = radius;
-      obj.v *= -1;
-    }
-    if (obj.x > trackLength - radius) {
-      obj.x = trackLength - radius;
-      obj.v *= -1;
-    }
-  }
-
-  function objectCollision() {
-    const dx = B.x - A.x;
-    if (Math.abs(dx) <= 2 * radius) {
-      const u1 = A.v, u2 = B.v;
-      const m1 = A.m, m2 = B.m;
-      A.v = (u1 * (m1 - m2) + 2 * m2 * u2) / (m1 + m2);
-      B.v = (u2 * (m2 - m1) + 2 * m1 * u1) / (m1 + m2);
-
-      const overlap = 2 * radius - Math.abs(dx);
-      const shift = overlap / 2 * Math.sign(dx || 1);
-      A.x -= shift;
-      B.x += shift;
-    }
-  }
-
-  function update(dt) {
-    const F = +document.getElementById('F').value;
-    const mu = +document.getElementById('mu').value;
-
-    const aA = accel(A, F, mu);
-    A.v += aA * dt;
-    A.x += A.v * dt;
-
-    if (enableB.checked) {
-      B.x += B.v * dt;
-      objectCollision();
-      wallBounce(B);
-    }
-    wallBounce(A);
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const margin = 50; // tighter scene without shrinking objects // larger margin so the scene breathes
-    const y = canvas.height / 2;
-    const scale = (canvas.width - 2 * margin) / trackLength;
-
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(margin, y);
-    ctx.lineTo(canvas.width - margin, y);
-    ctx.stroke();
-
-    function drawBall(x, color) {
-      const px = margin + x * scale;
-      const rpx = Math.max(radius * scale, 12); // enforce minimum visible size
-
-      // shadow for depth
-      ctx.save();
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 18;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.arc(px, y, rpx, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      // outline
-      ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(px, y, rpx, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    drawBall(A.x, '#8ecbff');
-    if (enableB.checked) drawBall(B.x, '#ffb48e');
-
-    readout.textContent = `t = ${t.toFixed(2)} s | A: x = ${A.x.toFixed(2)} m, v = ${A.v.toFixed(2)} m/s${enableB.checked ? ` | B: x = ${B.x.toFixed(2)} m, v = ${B.v.toFixed(2)} m/s` : ''}`;
-  }
-
-  function loop(ts) {
-    if (running) {
-      const dt = Math.min((ts - last) / 1000, 0.02);
-      t += dt;
-      update(dt);
-    }
-    last = ts;
-    draw();
-    requestAnimationFrame(loop);
-  }
-
-  play.onclick = () => running = true;
-  pause.onclick = () => running = false;
-  reset.onclick = reset;
-
-  reset();
-  requestAnimationFrame(loop);
-</script>
-</body>
-</html>
 
