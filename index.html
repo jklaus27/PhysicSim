@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Virtual Physics Lab</title>
 
-  <!-- Minimal fallback styling so background is visible even without style.css -->
   <style>
     html, body {
       margin: 0;
@@ -93,135 +92,147 @@
 </head>
 <body>
 
-  <!-- Animated background -->
-  <canvas id="orbit-canvas" aria-hidden="true"></canvas>
+<canvas id="orbit-canvas"></canvas>
 
-  <main>
-    <div class="hero">
-      <h1>Virtual Physics Lab</h1>
-      <p class="tagline">
-        Run experiments. Collect data. Discover the laws yourself.
-      </p>
+<main>
+  <div class="hero">
+    <h1>Virtual Physics Lab</h1>
+    <p class="tagline">Run experiments. Collect data. Discover the laws yourself.</p>
+    <a href="motion.html" class="primary-button">Start Motion Lab</a>
 
-      <a href="motion.html" class="primary-button">Start Motion Lab</a>
+    <ul class="quick-points">
+      <li>⏱️ Built in measurement tools</li>
+      <li>📈 Real data, real graphs</li>
+      <li>🧪 Discover laws through trials</li>
+    </ul>
+  </div>
 
-      <ul class="quick-points">
-        <li>⏱️ Built-in measurement tools</li>
-        <li>📈 Real data, real graphs</li>
-        <li>🧪 Discover laws through trials</li>
-      </ul>
-    </div>
+  <section>
+    <h2>What is this?</h2>
+    <p>
+      This is an interactive physics laboratory designed to let students discover
+      physical relationships through experimentation rather than memorization.
+      You will not see equations first.
+    </p>
 
-    <section>
-      <h2>What is this?</h2>
-      <p>
-        This is an interactive physics laboratory designed to let students discover
-        physical relationships through experimentation rather than memorization.
-        Equations are introduced only after patterns emerge from data.
-      </p>
+    <h2>Who is it for?</h2>
+    <p>
+      Middle school students, teachers, and anyone curious about physics as an
+      experimental science.
+    </p>
+  </section>
 
-      <h2>Who is it for?</h2>
-      <p>
-        Middle school students, teachers, and anyone curious about how physics works
-        when treated as an experimental science. No equipment required.
-      </p>
-    </section>
+  <footer>
+    Built as an open educational project. No accounts. No tracking of personal data.
+  </footer>
+</main>
 
-    <footer>
-      Built as an open educational project. No accounts. No tracking of personal data.
-    </footer>
-  </main>
+<script>
+(function () {
+  const canvas = document.getElementById("orbit-canvas");
+  const ctx = canvas.getContext("2d");
 
-  <!-- Orbit animation -->
-  <script>
-    (function () {
-      const canvas = document.getElementById("orbit-canvas");
-      const ctx = canvas.getContext("2d");
+  let w, h, dpr;
 
-      let w, h, dpr;
+  const stars = [];
+  const orbits = [
+    { rx: 0.45, ry: 0.18, speed: 0.0004, phase: 0.3, size: 4 },
+    { rx: 0.36, ry: 0.14, speed: 0.0006, phase: 1.5, size: 3 },
+    { rx: 0.28, ry: 0.11, speed: 0.0008, phase: 2.4, size: 2.5 },
+    { rx: 0.22, ry: 0.09, speed: 0.0010, phase: 0.9, size: 2 }
+  ];
 
-      const prefersReducedMotion =
-        window.matchMedia &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function resize() {
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    w = window.innerWidth;
+    h = window.innerHeight;
 
-      const stars = [];
-      const orbits = [
-        { rx: 0.45, ry: 0.18, speed: 0.0004, phase: 0.3, size: 4 },
-        { rx: 0.36, ry: 0.14, speed: 0.0006, phase: 1.5, size: 3 },
-        { rx: 0.28, ry: 0.11, speed: 0.0008, phase: 2.4, size: 2.5 },
-        { rx: 0.22, ry: 0.09, speed: 0.0010, phase: 0.9, size: 2 }
-      ];
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      function resize() {
-        dpr = Math.min(2, window.devicePixelRatio || 1);
-        w = window.innerWidth;
-        h = window.innerHeight;
+    stars.length = 0;
+    const count = Math.floor((w * h) / 12000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 1.4 + 0.3,
+        a: Math.random() * 0.5 + 0.2
+      });
+    }
+  }
 
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        canvas.style.width = w + "px";
-        canvas.style.height = h + "px";
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
 
-        stars.length = 0;
-        const count = Math.floor((w * h) / 12000);
-        for (let i = 0; i < count; i++) {
-          stars.push({
-            x: Math.random(),
-            y: Math.random(),
-            r: Math.random() * 1.4 + 0.3,
-            a: Math.random() * 0.5 + 0.2
-          });
-        }
-      }
+    const cx = w * 0.52;
+    const cy = h * 0.45;
+    const base = Math.min(w, h);
 
-      function draw(t) {
-        ctx.clearRect(0, 0, w, h);
+    // Background stars
+    for (const s of stars) {
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+      ctx.beginPath();
+      ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-        const cx = w * 0.52;
-        const cy = h * 0.45;
+    // Orbit paths
+    ctx.strokeStyle = "rgba(255,255,255,0.12)";
+    for (const o of orbits) {
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, o.rx * w, o.ry * h, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
 
-        for (const s of stars) {
-          ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-          ctx.beginPath();
-          ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
-          ctx.fill();
-        }
+    // Central star
+    const pulse = 0.9 + 0.1 * Math.sin(t * 0.001);
+    const starR = base * 0.06 * pulse;
 
-        ctx.strokeStyle = "rgba(255,255,255,0.12)";
-        for (const o of orbits) {
-          ctx.beginPath();
-          ctx.ellipse(cx, cy, o.rx * w, o.ry * h, 0, 0, Math.PI * 2);
-          ctx.stroke();
-        }
+    const halo = ctx.createRadialGradient(cx, cy, starR * 0.4, cx, cy, starR * 6);
+    halo.addColorStop(0, "rgba(180,220,255,0.30)");
+    halo.addColorStop(0.5, "rgba(120,180,255,0.18)");
+    halo.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(cx, cy, starR * 6, 0, Math.PI * 2);
+    ctx.fill();
 
-        for (const o of orbits) {
-          const ang = o.phase + t * o.speed;
-          const x = cx + o.rx * w * Math.cos(ang);
-          const y = cy + o.ry * h * Math.sin(ang);
+    const disc = ctx.createRadialGradient(cx, cy, 0, cx, cy, starR);
+    disc.addColorStop(0, "rgba(255,255,255,0.98)");
+    disc.addColorStop(0.4, "rgba(235,248,255,0.94)");
+    disc.addColorStop(0.8, "rgba(160,210,255,0.80)");
+    disc.addColorStop(1, "rgba(90,150,255,0.25)");
+    ctx.fillStyle = disc;
+    ctx.beginPath();
+    ctx.arc(cx, cy, starR, 0, Math.PI * 2);
+    ctx.fill();
 
-          ctx.fillStyle = "rgba(255,255,255,0.9)";
-          ctx.beginPath();
-          ctx.arc(x, y, o.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
+    // Orbiting bodies
+    for (const o of orbits) {
+      const ang = o.phase + t * o.speed;
+      const x = cx + o.rx * w * Math.cos(ang);
+      const y = cy + o.ry * h * Math.sin(ang);
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.beginPath();
+      ctx.arc(x, y, o.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
 
-      function loop(t) {
-        draw(t);
-        requestAnimationFrame(loop);
-      }
+  function loop(t) {
+    draw(t);
+    requestAnimationFrame(loop);
+  }
 
-      resize();
-      window.addEventListener("resize", resize);
-
-      if (!prefersReducedMotion) {
-        requestAnimationFrame(loop);
-      } else {
-        draw(0);
-      }
-    })();
-  </script>
+  resize();
+  window.addEventListener("resize", resize);
+  requestAnimationFrame(loop);
+})();
+</script>
 
 </body>
 </html>
