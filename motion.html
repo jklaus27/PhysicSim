@@ -64,65 +64,32 @@
       margin-bottom: 6px;
     }
 
-    /* Slider block */
-    .slider-block {
-      margin-top: 8px;
-      padding: 10px 10px 12px;
-      background: rgba(0,0,0,0.18);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px;
-    }
-
     .slider-wrap {
       position: relative;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    /* Center “0” marker */
+    /* CLEAR ZERO MARKER (NOT ∞) */
     .slider-wrap::after {
-      content: "0";
+      content: "0 m/s";
       position: absolute;
       left: 50%;
-      top: 22px;
+      top: 20px;
       transform: translateX(-50%);
-      font-size: 11px;
-      opacity: 0.65;
-      pointer-events: none;
-    }
-
-    /* Center line marker (visual “where 0 is”) */
-    .slider-wrap::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 6px;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 22px;
-      background: rgba(255,255,255,0.35);
-      border-radius: 2px;
+      font-size: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      opacity: 0.7;
       pointer-events: none;
     }
 
     input[type=range] {
       width: 100%;
-      accent-color: #ffffff;
-    }
-
-    .slider-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      opacity: 0.65;
-      margin-top: 6px;
-      user-select: none;
     }
 
     .buttons {
       display: flex;
       gap: 10px;
       margin-top: 10px;
-      flex-wrap: wrap;
     }
 
     button {
@@ -131,33 +98,9 @@
       border: none;
       background: white;
       color: black;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
     }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.06);
-      font-size: 12px;
-      opacity: 0.9;
-      margin-top: 10px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.45);
-    }
-
-    .dot.running { background: #6ee7ff; }
-    .dot.paused { background: rgba(255,255,255,0.45); }
-    .dot.wall { background: #ffd36e; }
 
     .canvas-wrap {
       margin-top: 12px;
@@ -173,74 +116,21 @@
       display: block;
     }
 
+    .question-list {
+      margin-top: 10px;
+      padding-left: 18px;
+      opacity: 0.9;
+    }
+
+    .question-list li {
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
     .readout {
       font-size: 13px;
-      margin-top: 8px;
-      opacity: 0.88;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .readout code {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.10);
-      padding: 4px 8px;
-      border-radius: 10px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-    }
-
-    /* Q&A */
-    .qa {
-      margin-top: 10px;
-      display: grid;
-      gap: 10px;
-    }
-
-    details {
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
-      border-radius: 14px;
-      padding: 10px 12px;
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 700;
-      list-style: none;
-      outline: none;
-    }
-
-    summary::-webkit-details-marker { display: none; }
-
-    .answer {
-      margin-top: 10px;
-      opacity: 0.9;
-      line-height: 1.55;
-      font-size: 14px;
-    }
-
-    .mini-diagram {
-      margin-top: 10px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px;
-      padding: 10px;
-      overflow: hidden;
-    }
-
-    .mini-diagram svg {
-      width: 100%;
-      height: 110px;
-      display: block;
-    }
-
-    .small-note {
-      font-size: 12px;
-      opacity: 0.7;
-      margin-top: 8px;
+      margin-top: 6px;
+      opacity: 0.85;
     }
   </style>
 </head>
@@ -257,38 +147,28 @@
     <h2>What is motion?</h2>
     <p>
       Motion describes how an object’s position changes over time. In this lab,
-      you will observe one object moving along a straight path and see how changing
-      the speed changes the motion.
+      you will observe a single object moving along a straight path and explore
+      how speed affects its motion.
     </p>
   </section>
 
   <section class="card">
     <h2>Explore constant speed</h2>
     <p>
-      Choose a speed using the slider. Positive values move the object to the right,
-      negative values move it to the left. Then press play.
+      Choose a speed using the slider. Positive values move the object to the
+      right, and negative values move it to the left. Then press play.
     </p>
 
     <div class="controls">
-      <div class="slider-block">
-        <label for="speed">Speed (m/s)</label>
-        <div class="slider-wrap">
-          <input type="range" id="speed" min="-20" max="20" value="0" />
-        </div>
-        <div class="slider-labels" aria-hidden="true">
-          <span>−20</span><span>0</span><span>+20</span>
-        </div>
+      <label>Speed (m/s)</label>
+      <div class="slider-wrap">
+        <input type="range" id="speed" min="-20" max="20" value="0">
+      </div>
 
-        <div class="buttons">
-          <button id="play" type="button">Play</button>
-          <button id="pause" type="button">Pause</button>
-          <button id="reset" type="button">Reset</button>
-        </div>
-
-        <div class="status-pill" id="statusPill" aria-live="polite">
-          <span class="dot paused" id="statusDot"></span>
-          <span id="statusText">Paused</span>
-        </div>
+      <div class="buttons">
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+        <button id="reset">Reset</button>
       </div>
     </div>
 
@@ -297,101 +177,15 @@
     </div>
 
     <div class="readout" id="readout"></div>
-    <div class="small-note">
-      Tip: When the object reaches the end of the track, it stops so you can notice what happened.
-    </div>
   </section>
 
   <section class="card">
     <h2>Think about it</h2>
-
-    <div class="qa">
-      <details>
-        <summary>1) What happens when the speed is zero?</summary>
-        <div class="answer">
-          If the speed is <b>0 m/s</b>, the object does not move. Its position stays the same as time passes.
-          That’s because “speed” tells you how much the position changes each second. If it’s zero, the change is zero.
-          <div class="mini-diagram" role="img" aria-label="Diagram showing position staying the same over time when speed is zero.">
-            <svg viewBox="0 0 600 110">
-              <rect x="0" y="0" width="600" height="110" fill="rgba(0,0,0,0.0)"></rect>
-              <!-- axes -->
-              <line x1="50" y1="85" x2="560" y2="85" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-              <line x1="50" y1="20" x2="50" y2="90" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
-              <text x="52" y="18" fill="rgba(255,255,255,0.7)" font-size="12">position</text>
-              <text x="530" y="105" fill="rgba(255,255,255,0.7)" font-size="12">time →</text>
-              <!-- flat line -->
-              <line x1="70" y1="55" x2="540" y2="55" stroke="#8ecbff" stroke-width="4" stroke-linecap="round"/>
-              <text x="70" y="48" fill="rgba(255,255,255,0.85)" font-size="12">speed = 0 → position stays constant</text>
-            </svg>
-          </div>
-          In other words: time passes, but the location does not change.
-        </div>
-      </details>
-
-      <details>
-        <summary>2) What does “negative speed” mean here?</summary>
-        <div class="answer">
-          In this lab, the slider uses a sign (plus or minus) to show <b>direction</b>:
-          <ul>
-            <li><b>Positive</b> speed means moving to the <b>right</b>.</li>
-            <li><b>Negative</b> speed means moving to the <b>left</b>.</li>
-          </ul>
-          The size of the number tells “how fast,” and the sign tells “which way.”
-          <div class="mini-diagram" role="img" aria-label="Diagram showing direction for positive and negative speed on a line.">
-            <svg viewBox="0 0 600 110">
-              <line x1="60" y1="55" x2="540" y2="55" stroke="rgba(255,255,255,0.35)" stroke-width="3" stroke-linecap="round"/>
-              <!-- center marker -->
-              <line x1="300" y1="35" x2="300" y2="75" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
-              <text x="294" y="30" fill="rgba(255,255,255,0.7)" font-size="12">0</text>
-
-              <!-- positive arrow -->
-              <circle cx="220" cy="55" r="12" fill="#8ecbff" />
-              <line x1="220" y1="20" x2="360" y2="20" stroke="#8ecbff" stroke-width="3" stroke-linecap="round"/>
-              <polygon points="360,20 348,14 348,26" fill="#8ecbff"/>
-              <text x="370" y="24" fill="rgba(255,255,255,0.85)" font-size="12">positive → right</text>
-
-              <!-- negative arrow -->
-              <circle cx="380" cy="55" r="12" fill="#8ecbff" opacity="0.85"/>
-              <line x1="380" y1="90" x2="240" y2="90" stroke="#8ecbff" stroke-width="3" stroke-linecap="round"/>
-              <polygon points="240,90 252,84 252,96" fill="#8ecbff"/>
-              <text x="70" y="94" fill="rgba(255,255,255,0.85)" font-size="12">negative → left</text>
-            </svg>
-          </div>
-          So a speed of −10 m/s means “move left fairly fast,” not “move backward in time” or anything like that.
-        </div>
-      </details>
-
-      <details>
-        <summary>3) Why does the object stop at the ends of the track?</summary>
-        <div class="answer">
-          The track has two ends (a left end and a right end). In this lab, when the object reaches an end,
-          the simulation <b>pauses</b> automatically. This is intentional: it helps you notice that the object
-          can’t go farther without a new “rule” (like bouncing, turning around, or stopping).
-          <div class="mini-diagram" role="img" aria-label="Diagram showing an object reaching a wall and stopping.">
-            <svg viewBox="0 0 600 110">
-              <!-- track -->
-              <line x1="70" y1="60" x2="530" y2="60" stroke="rgba(255,255,255,0.35)" stroke-width="3" stroke-linecap="round"/>
-              <!-- walls -->
-              <line x1="70" y1="35" x2="70" y2="85" stroke="rgba(255,255,255,0.35)" stroke-width="4"/>
-              <line x1="530" y1="35" x2="530" y2="85" stroke="rgba(255,255,255,0.35)" stroke-width="4"/>
-
-              <!-- moving object -->
-              <circle cx="460" cy="60" r="14" fill="#8ecbff"/>
-              <line x1="420" y1="25" x2="495" y2="25" stroke="#8ecbff" stroke-width="3" stroke-linecap="round"/>
-              <polygon points="495,25 483,19 483,31" fill="#8ecbff"/>
-              <text x="505" y="29" fill="rgba(255,255,255,0.85)" font-size="12">moving →</text>
-
-              <!-- stop marker -->
-              <text x="220" y="98" fill="rgba(255,255,255,0.85)" font-size="12">
-                When it reaches the wall, it pauses so you can observe what happened.
-              </text>
-            </svg>
-          </div>
-          Later labs can explore different choices at the wall (bounce, stick, turn around), but for now
-          “stop and observe” keeps the idea clear.
-        </div>
-      </details>
-    </div>
+    <ul class="question-list">
+      <li>What happens to the object’s position when the speed is zero?</li>
+      <li>How does the direction of motion change when the speed is negative?</li>
+      <li>What do you notice when the object reaches the ends of the track?</li>
+    </ul>
   </section>
 </main>
 
@@ -409,51 +203,21 @@
   const trackLength = 100;
   const radius = 5;
 
-  const speedSlider = document.getElementById("speed");
-  const readout = document.getElementById("readout");
-  const statusDot = document.getElementById("statusDot");
-  const statusText = document.getElementById("statusText");
-
-  // Defaults (Reset should restore these)
-  const DEFAULT_X = 50;
-  const DEFAULT_SPEED = 0;
-
-  let x = DEFAULT_X;
-  let v = DEFAULT_SPEED;
+  let x = 50;
+  let v = 0;
   let t = 0;
   let running = false;
   let last = 0;
 
-  let wallStopFlashUntil = 0; // timestamp in ms for brief visual cue
-
-  function setStatus(mode) {
-    statusDot.classList.remove("running", "paused", "wall");
-    if (mode === "running") {
-      statusDot.classList.add("running");
-      statusText.textContent = "Running";
-    } else if (mode === "wall") {
-      statusDot.classList.add("wall");
-      statusText.textContent = "Stopped at end";
-    } else {
-      statusDot.classList.add("paused");
-      statusText.textContent = "Paused";
-    }
-  }
+  const speedSlider = document.getElementById("speed");
+  const readout = document.getElementById("readout");
 
   function reset() {
-    // Reset EVERYTHING including slider value
-    speedSlider.value = String(DEFAULT_SPEED);
-    x = DEFAULT_X;
-    v = DEFAULT_SPEED;
+    x = 50;
     t = 0;
+    v = 0;
+    speedSlider.value = 0;
     running = false;
-    setStatus("paused");
-  }
-
-  function stopAtWall() {
-    running = false;
-    wallStopFlashUntil = performance.now() + 450;
-    setStatus("wall");
   }
 
   function update(dt) {
@@ -462,11 +226,11 @@
 
     if (x < radius) {
       x = radius;
-      stopAtWall();
+      running = false;
     }
     if (x > trackLength - radius) {
       x = trackLength - radius;
-      stopAtWall();
+      running = false;
     }
   }
 
@@ -477,36 +241,13 @@
     const y = canvas.height / 2;
     const scale = (canvas.width - 2 * margin) / trackLength;
 
-    // Track
-    ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    ctx.strokeStyle = "rgba(255,255,255,0.4)";
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(margin, y);
     ctx.lineTo(canvas.width - margin, y);
     ctx.stroke();
 
-    // End walls (subtle)
-    const wallGlow = performance.now() < wallStopFlashUntil;
-    ctx.strokeStyle = wallGlow ? "rgba(255,211,110,0.9)" : "rgba(255,255,255,0.25)";
-    ctx.lineWidth = wallGlow ? 4 : 3;
-    ctx.beginPath();
-    ctx.moveTo(margin, y - 28);
-    ctx.lineTo(margin, y + 28);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(canvas.width - margin, y - 28);
-    ctx.lineTo(canvas.width - margin, y + 28);
-    ctx.stroke();
-
-    // Center marker on track (matches “0” idea: center reference point)
-    ctx.strokeStyle = "rgba(255,255,255,0.18)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2, y - 22);
-    ctx.lineTo(canvas.width / 2, y + 22);
-    ctx.stroke();
-
-    // Object
     const px = margin + x * scale;
     const rpx = Math.max(radius * scale, 12);
 
@@ -515,11 +256,8 @@
     ctx.arc(px, y, rpx, 0, Math.PI * 2);
     ctx.fill();
 
-    // Readout: time gets 2 decimals, others 1
-    readout.innerHTML =
-      `<code>time = ${t.toFixed(2)} s</code>` +
-      `<code>position ≈ ${x.toFixed(1)} m</code>` +
-      `<code>speed ≈ ${v.toFixed(1)} m/s</code>`;
+    readout.textContent =
+      `time = ${t.toFixed(2)} s · position ≈ ${x.toFixed(1)} m · speed ≈ ${v.toFixed(1)} m/s`;
   }
 
   function loop(ts) {
@@ -533,16 +271,8 @@
     requestAnimationFrame(loop);
   }
 
-  document.getElementById("play").onclick = () => {
-    running = true;
-    setStatus("running");
-  };
-
-  document.getElementById("pause").onclick = () => {
-    running = false;
-    setStatus("paused");
-  };
-
+  document.getElementById("play").onclick = () => running = true;
+  document.getElementById("pause").onclick = () => running = false;
   document.getElementById("reset").onclick = reset;
 
   reset();
@@ -551,5 +281,6 @@
 
 </body>
 </html>
+
 
 
